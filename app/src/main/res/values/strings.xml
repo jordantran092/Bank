@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Bank (by Jordan Tran)</string>
+
+    <string-array name="serviceType">
+        <item>Deposit</item>
+        <item>Withdraw</item>
+        <item>Transfer</item>
+        <item>Print Statement</item>
+
+
+    </string-array>
+</resources>

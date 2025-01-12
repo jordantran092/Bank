@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/labelClientName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:text="Name of Client:"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/labelStartBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="32dp"
+        android:text="Initial Balance:"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelClientName" />
+
+    <Button
+        android:id="@+id/buttonAddAccount"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="204dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="40dp"
+        android:onClick="computeButtonAddNewAccountClicked"
+        android:text="ADD A NEW ACCOUNT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputStartBalance" />
+
+    <Spinner
+        android:id="@+id/optionsServiceType"
+        android:layout_width="157dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="40dp"
+        android:entries="@array/serviceType"
+        app:layout_constraintStart_toEndOf="@+id/labelServiceType"
+        app:layout_constraintTop_toBottomOf="@+id/buttonAddAccount" />
+
+    <TextView
+        android:id="@+id/labelAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="36dp"
+        android:text="Amount:"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelToAccount" />
+
+    <TextView
+        android:id="@+id/labelServiceType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="36dp"
+        android:text="Service Type:"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonAddAccount" />
+
+    <EditText
+        android:id="@+id/inputAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.24"
+        app:layout_constraintStart_toEndOf="@+id/labelAmount"
+        app:layout_constraintTop_toBottomOf="@+id/inputToAccount" />
+
+    <TextView
+        android:id="@+id/outputStatus"
+        android:layout_width="390dp"
+        android:layout_height="103dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="0sp"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonConfirm" />
+
+    <TextView
+        android:id="@+id/labelFromAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="32dp"
+        android:text="From Account:"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelServiceType" />
+
+    <EditText
+        android:id="@+id/inputToAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.366"
+        app:layout_constraintStart_toEndOf="@+id/labelToAccount"
+        app:layout_constraintTop_toBottomOf="@+id/inputFromAccount" />
+
+    <TextView
+        android:id="@+id/labelToAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="28dp"
+        android:text="To Account:"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelFromAccount" />
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="204dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="36dp"
+        android:onClick="computeButtonConfirmClicked"
+        android:text="CONFIRM"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputAmount" />
+
+    <EditText
+        android:id="@+id/inputFromAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintStart_toEndOf="@+id/labelFromAccount"
+        app:layout_constraintTop_toBottomOf="@+id/optionsServiceType" />
+
+    <EditText
+        android:id="@+id/inputStartBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.37"
+        app:layout_constraintStart_toEndOf="@+id/labelStartBalance"
+        app:layout_constraintTop_toBottomOf="@+id/inputClientName" />
+
+    <EditText
+        android:id="@+id/inputClientName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelClientName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

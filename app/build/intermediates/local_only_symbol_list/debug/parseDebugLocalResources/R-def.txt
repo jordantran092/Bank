@@ -1,0 +1,31 @@
+R_DEF: Internal format may change without notice
+local
+array serviceType
+color black
+color white
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id buttonAddAccount
+id buttonConfirm
+id inputAmount
+id inputClientName
+id inputFromAccount
+id inputStartBalance
+id inputToAccount
+id labelAmount
+id labelClientName
+id labelFromAccount
+id labelServiceType
+id labelStartBalance
+id labelToAccount
+id main
+id optionsServiceType
+id outputStatus
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Base.Theme.Bank
+style Theme.Bank
+xml backup_rules
+xml data_extraction_rules
