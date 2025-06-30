@@ -1,0 +1,1 @@
+This app is a mobile bank app using OOP and test driven development created in Android Studio which means there is a GUI for the user to interact with, providing services such as adding an account, deposit, withdraw, print statement, transfer. In addition to the services, error messages can be displayed to guide the user to perform the correct actions.
