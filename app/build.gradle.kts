@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.jordantran.bank"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.jordantran.bank"
@@ -41,6 +41,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.jackson.databind)
-    implementation(libs.lombok)
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
     implementation(libs.okhttp)
 }

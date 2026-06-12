@@ -4,7 +4,7 @@
             "outputFile": "com.jordantran.bank.app-mergeDebugResources-2:/values-v18/values-v18.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\jorda\\.gradle\\caches\\8.9\\transforms\\157a9ceb9d0f0b36243a86aad1aa5b78\\transformed\\appcompat-1.6.1\\res\\values-v18\\values-v18.xml",
+                    "source": "C:\\Users\\jorda\\.gradle\\caches\\8.14.4\\transforms\\1be1d9d367f1fb70c96b4a0bcfdaa82f\\transformed\\appcompat-1.7.1\\res\\values-v18\\values-v18.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

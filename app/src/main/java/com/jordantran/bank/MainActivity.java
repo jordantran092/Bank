@@ -10,16 +10,14 @@ import android.widget.TextView;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jordantran.bank.domain.dto.BankStatusDTO;
 
 
 
 public class MainActivity extends AppCompatActivity {
 
-    ObjectMapper objectMapper;
-
-    public MainActivity() {
-        this.objectMapper = new ObjectMapper();
-    }
+    private ObjectMapper objectMapper;
 
 
     @Override
@@ -27,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        // init
+        this.objectMapper = new ObjectMapper();
         setContentsOfTextView(R.id.outputStatus, getStatus());
     }
 
@@ -58,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String getStatus() {
 
+        String result = "";
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -68,10 +69,14 @@ public class MainActivity extends AppCompatActivity {
             String responseJson = response.body().string();
 
             BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
+
+            result = bankStatusDTO.getStatus();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //return
+
+
+        return result;
     }
 
 
