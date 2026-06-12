@@ -1,5 +1,6 @@
 package com.jordantran.bank;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private ObjectMapper objectMapper;
+    private OkHttpClient client;
 
 
     @Override
@@ -32,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // init
+        client = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
-        String status = getStatus();
-        setContentsOfTextView(R.id.outputStatus, status);
+        setOutputStatusToBankStatus();
     }
 
     /* Sets the content of a text label */
@@ -60,14 +62,13 @@ public class MainActivity extends AppCompatActivity {
         return string;
     }
 
+
+
+
+
     /* Helper Methods */
 
-    public String getStatus() {
-
-        // 'final' so that result is fixed so inner class, of Callback, will use same reference, to avoid any desynchronization
-        final String[] result = new String[1];
-
-        OkHttpClient client = new OkHttpClient();
+    private void setOutputStatusToBankStatus() {
 
         Request request = new Request.Builder()
                 .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/status")
@@ -75,29 +76,33 @@ public class MainActivity extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
 
+            @Override
             // In case http request cannot be sent
-            @Override public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
             }
 
-            @Override public void onResponse(Call call, Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
 
-                    // If http response status was not successful e.g. not 200s
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String responseJson = response.body().string();
 
-                    
-                    String responseJson = responseBody.string();
+                            BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
 
-                    BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
-
-                    result[0] = bankStatusDTO.getStatus();
-                }
+                            setContentsOfTextView(R.id.outputStatus, bankStatusDTO.getStatus());
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 
-
-        return result[0];
     }
 
 
