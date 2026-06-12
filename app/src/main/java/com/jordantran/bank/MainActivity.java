@@ -7,12 +7,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jordantran.bank.domain.dto.BankStatusDTO;
 
+import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         // init
         this.objectMapper = new ObjectMapper();
-        setContentsOfTextView(R.id.outputStatus, getStatus());
+        String status = getStatus();
+        setContentsOfTextView(R.id.outputStatus, status);
     }
 
     /* Sets the content of a text label */
@@ -55,9 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
     /* Helper Methods */
 
-    private String getStatus() {
+    public String getStatus() {
 
-        String result = "";
+        // 'final' so that result is fixed so inner class, of Callback, will use same reference, to avoid any desynchronization
+        final String[] result = new String[1];
 
         OkHttpClient client = new OkHttpClient();
 
@@ -65,18 +73,31 @@ public class MainActivity extends AppCompatActivity {
                 .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/status")
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            String responseJson = response.body().string();
+        client.newCall(request).enqueue(new Callback() {
 
-            BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
+            // In case http request cannot be sent
+            @Override public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
 
-            result = bankStatusDTO.getStatus();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            @Override public void onResponse(Call call, Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+
+                    // If http response status was not successful e.g. not 200s
+                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+                    
+                    String responseJson = responseBody.string();
+
+                    BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
+
+                    result[0] = bankStatusDTO.getStatus();
+                }
+            }
+        });
 
 
-        return result;
+        return result[0];
     }
 
 

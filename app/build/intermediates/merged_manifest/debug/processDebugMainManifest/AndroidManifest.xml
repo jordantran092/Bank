@@ -8,6 +8,9 @@
         android:minSdkVersion="24"
         android:targetSdkVersion="34" />
 
+    <!-- To be able to access internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <permission
         android:name="com.jordantran.bank.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
