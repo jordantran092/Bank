@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "cs.mylab.bank"
+    namespace = "com.jordantran.bank"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "cs.mylab.bank"
+        applicationId = "com.jordantran.bank"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

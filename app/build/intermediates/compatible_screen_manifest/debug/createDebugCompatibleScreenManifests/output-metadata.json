@@ -4,7 +4,7 @@
     "type": "COMPATIBLE_SCREEN_MANIFEST",
     "kind": "Directory"
   },
-  "applicationId": "cs.mylab.bank",
+  "applicationId": "com.jordantran.bank",
   "variantName": "debug",
   "elements": []
 }

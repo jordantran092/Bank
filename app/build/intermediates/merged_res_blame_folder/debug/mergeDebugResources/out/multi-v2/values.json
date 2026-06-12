@@ -1,23 +1,25 @@
 {
     "logs": [
         {
-            "outputFile": "cs.mylab.bank.app-mergeDebugResources-29:/values/values.xml",
+            "outputFile": "com.jordantran.bank.app-mergeDebugResources-2:/values/values.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\jorda\\eclipse-workspace\\Bank\\app\\src\\main\\res\\values\\colors.xml",
+                    "source": "C:\\Backup Jordan Computer\\School\\Projects\\Bank\\app\\src\\main\\res\\values\\strings.xml",
                     "from": {
-                        "startLines": "2,3",
+                        "startLines": "3,1",
                         "startColumns": "4,4",
-                        "startOffsets": "55,97",
-                        "endColumns": "41,41",
-                        "endOffsets": "92,134"
+                        "startOffsets": "76,16",
+                        "endLines": "10,1",
+                        "endColumns": "19,58",
+                        "endOffsets": "257,70"
                     },
                     "to": {
-                        "startLines": "648,965",
+                        "startLines": "2,1973",
                         "startColumns": "4,4",
-                        "startOffsets": "32984,56531",
-                        "endColumns": "41,41",
-                        "endOffsets": "33021,56568"
+                        "startOffsets": "150,130379",
+                        "endLines": "9,1973",
+                        "endColumns": "19,58",
+                        "endOffsets": "331,130433"
                     }
                 },
                 {
@@ -243,25 +245,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\jorda\\eclipse-workspace\\Bank\\app\\src\\main\\res\\values\\strings.xml",
-                    "from": {
-                        "startLines": "3,1",
-                        "startColumns": "4,4",
-                        "startOffsets": "76,16",
-                        "endLines": "10,1",
-                        "endColumns": "19,58",
-                        "endOffsets": "257,70"
-                    },
-                    "to": {
-                        "startLines": "2,1973",
-                        "startColumns": "4,4",
-                        "startOffsets": "150,130379",
-                        "endLines": "9,1973",
-                        "endColumns": "19,58",
-                        "endOffsets": "331,130433"
-                    }
-                },
-                {
                     "source": "C:\\Users\\jorda\\.gradle\\caches\\8.9\\transforms\\99697423288e2f94c2e977b0bb0158be\\transformed\\viewpager2-1.0.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -317,7 +300,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\jorda\\eclipse-workspace\\Bank\\app\\src\\main\\res\\values\\themes.xml",
+                    "source": "C:\\Backup Jordan Computer\\School\\Projects\\Bank\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,97",
+                        "endColumns": "41,41",
+                        "endOffsets": "92,134"
+                    },
+                    "to": {
+                        "startLines": "648,965",
+                        "startColumns": "4,4",
+                        "startOffsets": "32984,56531",
+                        "endColumns": "41,41",
+                        "endOffsets": "33021,56568"
+                    }
+                },
+                {
+                    "source": "C:\\Backup Jordan Computer\\School\\Projects\\Bank\\app\\src\\main\\res\\values\\themes.xml",
                     "from": {
                         "startLines": "2,7",
                         "startColumns": "4,4",

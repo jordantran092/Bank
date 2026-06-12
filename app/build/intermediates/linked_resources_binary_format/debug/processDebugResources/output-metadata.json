@@ -4,7 +4,7 @@
     "type": "LINKED_RESOURCES_BINARY_FORMAT",
     "kind": "Directory"
   },
-  "applicationId": "cs.mylab.bank",
+  "applicationId": "com.jordantran.bank",
   "variantName": "debug",
   "elements": [
     {

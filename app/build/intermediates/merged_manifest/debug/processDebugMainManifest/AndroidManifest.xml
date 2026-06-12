@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cs.mylab.bank"
+    package="com.jordantran.bank"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -9,10 +9,10 @@
         android:targetSdkVersion="34" />
 
     <permission
-        android:name="cs.mylab.bank.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:name="com.jordantran.bank.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="cs.mylab.bank.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission android:name="com.jordantran.bank.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +28,7 @@
         android:testOnly="true"
         android:theme="@style/Theme.Bank" >
         <activity
-            android:name="cs.mylab.bank.MainActivity"
+            android:name="com.jordantran.bank.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +39,7 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="cs.mylab.bank.androidx-startup"
+            android:authorities="com.jordantran.bank.androidx-startup"
             android:exported="false" >
             <meta-data
                 android:name="androidx.emoji2.text.EmojiCompatInitializer"

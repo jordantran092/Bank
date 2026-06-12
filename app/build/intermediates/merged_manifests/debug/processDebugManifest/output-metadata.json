@@ -4,7 +4,7 @@
     "type": "MERGED_MANIFESTS",
     "kind": "Directory"
   },
-  "applicationId": "cs.mylab.bank",
+  "applicationId": "com.jordantran.bank",
   "variantName": "debug",
   "elements": [
     {

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "cs.mylab.bank.app-mergeDebugResources-29:/values-sv/values-sv.xml",
+            "outputFile": "com.jordantran.bank.app-mergeDebugResources-2:/values-sv/values-sv.xml",
             "map": [
                 {
                     "source": "C:\\Users\\jorda\\.gradle\\caches\\8.9\\transforms\\b7c8278e4ef6583f08edc806c9d7ada4\\transformed\\material-1.10.0\\res\\values-sv\\values-sv.xml",
