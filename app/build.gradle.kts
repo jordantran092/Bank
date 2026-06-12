@@ -40,4 +40,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.jackson.databind)
+    implementation(libs.lombok)
+    implementation(libs.okhttp)
 }
