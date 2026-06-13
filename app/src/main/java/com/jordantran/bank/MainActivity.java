@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        
+
         if(optionSelected.equals("Deposit")) {
             String name = this.getInputOfTextField(R.id.inputToAccount);
             depositOrWithdraw(name, amount, "DEPOSIT");
