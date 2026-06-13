@@ -12,10 +12,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="44dp"
         android:text="Name of Client:"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/inputClientName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/labelClientName"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -90,15 +104,15 @@
 
     <TextView
         android:id="@+id/outputStatus"
-        android:layout_width="390dp"
-        android:layout_height="103dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
+        android:layout_width="399dp"
+        android:layout_height="207dp"
+        android:layout_marginTop="40dp"
+        android:gravity="top"
         android:lineSpacingExtra="0sp"
         android:textAlignment="center"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonConfirm" />
 
@@ -180,19 +194,5 @@
         app:layout_constraintHorizontal_bias="0.37"
         app:layout_constraintStart_toEndOf="@+id/labelStartBalance"
         app:layout_constraintTop_toBottomOf="@+id/inputClientName" />
-
-    <EditText
-        android:id="@+id/inputClientName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
-        android:ems="10"
-        android:inputType="text"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/labelClientName"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

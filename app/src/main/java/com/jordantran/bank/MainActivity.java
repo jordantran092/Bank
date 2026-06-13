@@ -16,15 +16,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jordantran.bank.domain.dto.BankStatusDTO;
 import com.jordantran.bank.domain.dto.ClientDTO;
+import com.jordantran.bank.domain.dto.GetStatementDTO;
 import com.jordantran.bank.domain.dto.TransactionDepositWithdrawDTO;
+import com.jordantran.bank.domain.dto.TransactionTransferDTO;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         // init
         client = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
-        setOutputStatusToBankStatus();
+        getBankStatusAndSetOutputStatus();
     }
 
     /* Sets the content of a text label */
@@ -92,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
     public void computeButtonConfirmClicked(View view) throws JsonProcessingException {
         String optionSelected = getItemSelected(R.id.optionsServiceType);
         double amount = 0;
-        String output = "";
 
         if(!optionSelected.equals("Print Statement")) {
             amount = Integer.parseInt(this.getInputOfTextField(R.id.inputAmount));
@@ -100,44 +101,135 @@ public class MainActivity extends AppCompatActivity {
 
         if(optionSelected.equals("Deposit")) {
             String name = this.getInputOfTextField(R.id.inputToAccount);
-            deposit(name, amount);
+            depositOrWithdraw(name, amount, "DEPOSIT");
         }
-//        else if(optionSelected.equals("Withdraw")) {
-//            String name = this.getInputOfTextField(R.id.inputFromAccount);
-//            bank.withdraw(name, amount);
-//        }
-//        else if(optionSelected.equals("Transfer")) {
-//            String fromName = this.getInputOfTextField(R.id.inputFromAccount);
-//            String toName = this.getInputOfTextField(R.id.inputToAccount);
-//            bank.transfer(fromName, toName, amount);
-//        }
-//        else if(optionSelected.equals("Print Statement")) {
-//            String name = this.getInputOfTextField(R.id.inputFromAccount);
-//
-//            String[] statement = bank.getStatement(name);
-//            for(int i = 0; i < statement.length; i++) {
-//                output += String.format("%s", statement[i]);
-//                if (i < statement.length - 1) {
-//                    output += "\n";
-//                }
-//            }
-//        }
-//
-//
-//        if(!optionSelected.equals("Print Statement")) {
-//            output = bank.getStatus();
-//        }
-//        setContentsOfTextView(R.id.outputStatus, output);
+        else if(optionSelected.equals("Withdraw")) {
+            String name = this.getInputOfTextField(R.id.inputFromAccount);
+            depositOrWithdraw(name, amount, "WITHDRAW");
+        }
+        else if(optionSelected.equals("Transfer")) {
+            String fromName = this.getInputOfTextField(R.id.inputFromAccount);
+            String toName = this.getInputOfTextField(R.id.inputToAccount);
+            transfer(fromName, toName, amount);
+        }
+        else if(optionSelected.equals("Print Statement")) {
+            String name = this.getInputOfTextField(R.id.inputFromAccount);
+
+            getStatementAndSetOutputStatus(name);
+
+        }
+
+    }
+
+    private void getStatementAndSetOutputStatus(String name) throws JsonProcessingException {
+
+
+
+        Request request = new Request.Builder()
+                .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/clients/" + name)
+                .build();
+
+        /*
+         Makes a new call, with enqueue denoting asynchronous. So that the main UI thread is not blocked, and the http call can be run in a background thread
+
+         Create a new Callback as Callback is an interface that needs to be implemented to describe what should be done on failure, and on response
+         */
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            // In case http request cannot be sent
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                // If status returned was not success (200)
+                if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
+
+
+                runOnUiThread(new Runnable() { // since onResponse and onFailure is running on a background thread, must switch back to UI thread to make UI changes
+                    // Runnable is essentially used to create the block of code (in run() below) to run on the main UI thread outside of this background thread
+
+                    @Override
+                    public void run() {
+                        try {
+                            String responseJson = response.body().string();
+
+                            GetStatementDTO getStatementDTO = objectMapper.readValue(responseJson, GetStatementDTO.class);
+
+                            List<String> statement = getStatementDTO.getStatement();
+
+
+                            String output = "";
+                            for(int i = 0; i < statement.size(); i++) {
+                                output += String.format("%s", statement.get(i));
+                                if (i < statement.size() - 1) {
+                                    output += "\n";
+                                }
+                            }
+
+                            setContentsOfTextView(R.id.outputStatus, output);
+
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void transfer(String fromName, String toName, double amount) throws JsonProcessingException {
+
+        TransactionTransferDTO transactionTransferDTO = TransactionTransferDTO.builder()
+                .fromName(fromName)
+                .toName(toName)
+                .amount(amount)
+                .build();
+
+        String json = objectMapper.writeValueAsString(transactionTransferDTO);
+
+        RequestBody requestBody = RequestBody.create(json, JSON);
+
+
+        Request request = new Request.Builder()
+                .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/clients/bulk")
+                .patch(requestBody)
+                .build();
+
+        /*
+         Makes a new call, with enqueue denoting asynchronous. So that the main UI thread is not blocked, and the http call can be run in a background thread
+
+         Create a new Callback as Callback is an interface that needs to be implemented to describe what should be done on failure, and on response
+         */
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            // In case http request cannot be sent
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                // If status returned was not success or conflict, where conflict can still be expected
+                if (!(response.code() == 200 || response.code() == 409)) throw new IOException("Unexpected code: " + response);
+
+                // Set status only when request has been fulfilled, if set it immediately right after where it was called, it may set status too soon
+                getBankStatusAndSetOutputStatus();
+            }
+        });
+
     }
 
 
-
-
-
-    private void deposit(String name, double amount) throws JsonProcessingException {
+    private void depositOrWithdraw(String name, double amount, String transactionType) throws JsonProcessingException {
 
         TransactionDepositWithdrawDTO transactionDepositWithdrawDTO = TransactionDepositWithdrawDTO.builder()
-                .transactionType("DEPOSIT")
+                .transactionType(transactionType)
                 .name(name)
                 .amount(amount)
                 .build();
@@ -171,11 +263,12 @@ public class MainActivity extends AppCompatActivity {
                 if (!(response.code() == 200 || response.code() == 409)) throw new IOException("Unexpected code: " + response);
 
                 // Set status only when request has been fulfilled, if set it immediately right after where it was called, it may set status too soon
-                setOutputStatusToBankStatus();
+                getBankStatusAndSetOutputStatus();
             }
         });
 
     }
+
 
     private void addClient(String name, double amount) throws JsonProcessingException {
 
@@ -210,16 +303,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 // If status returned was not success or conflict, where conflict can still be expected
-                if (!(response.code() == 200 || response.code() == 409)) throw new IOException("Unexpected code: " + response);
+                if (!(response.code() == 201 || response.code() == 409)) throw new IOException("Unexpected code: " + response);
 
                 // Set status only when request has been fulfilled, if set it right after addClient call where it was called, it may set status too soon
-                setOutputStatusToBankStatus();
+                getBankStatusAndSetOutputStatus();
             }
         });
 
     }
 
-    private void setOutputStatusToBankStatus() {
+    private void getBankStatusAndSetOutputStatus() {
 
         Request request = new Request.Builder()
                 .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/status")
