@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jordantran.bank.domain.dto.BankStatusDTO;
 import com.jordantran.bank.domain.dto.ClientDTO;
+import com.jordantran.bank.domain.dto.TransactionDepositWithdrawDTO;
 
 import java.io.IOException;
 
@@ -80,29 +81,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /*
+    Performs the service depending on what service chosen in service type drop down menu.
+        - If deposit, will get input amount and input name to deposit into
+        - If withdraw, will get input amount and input name to withdraw from
+        - If transfer, will get input names and input amount to transfer
+        - If print statement, will get input name and print the client's statement
+        - If an error occurs, status of bank will output the appropriate error
+     */
+    public void computeButtonConfirmClicked(View view) throws JsonProcessingException {
+        String optionSelected = getItemSelected(R.id.optionsServiceType);
+        double amount = 0;
+        String output = "";
 
-//
-//    /*
-//    Performs the service depending on what service chosen in service type drop down menu.
-//        - If deposit, will get input amount and input name to deposit into
-//        - If withdraw, will get input amount and input name to withdraw from
-//        - If transfer, will get input names and input amount to transfer
-//        - If print statement, will get input name and print the client's statement
-//        - If an error occurs, status of bank will output the appropriate error
-//     */
-//    public void computeButtonConfirmClicked(View view) {
-//        String optionSelected = getItemSelected(R.id.optionsServiceType);
-//        double amount = 0;
-//        String output = "";
-//
-//        if(!optionSelected.equals("Print Statement")) {
-//            amount = Integer.parseInt(this.getInputOfTextField(R.id.inputAmount));
-//        }
-//
-//        if(optionSelected.equals("Deposit")) {
-//            String name = this.getInputOfTextField(R.id.inputToAccount);
-//            bank.deposit(name, amount);
-//        }
+        if(!optionSelected.equals("Print Statement")) {
+            amount = Integer.parseInt(this.getInputOfTextField(R.id.inputAmount));
+        }
+
+        if(optionSelected.equals("Deposit")) {
+            String name = this.getInputOfTextField(R.id.inputToAccount);
+            deposit(name, amount);
+        }
 //        else if(optionSelected.equals("Withdraw")) {
 //            String name = this.getInputOfTextField(R.id.inputFromAccount);
 //            bank.withdraw(name, amount);
@@ -129,12 +128,54 @@ public class MainActivity extends AppCompatActivity {
 //            output = bank.getStatus();
 //        }
 //        setContentsOfTextView(R.id.outputStatus, output);
-//    }
+    }
 
 
 
 
-    /* Helper Methods */
+
+    private void deposit(String name, double amount) throws JsonProcessingException {
+
+        TransactionDepositWithdrawDTO transactionDepositWithdrawDTO = TransactionDepositWithdrawDTO.builder()
+                .transactionType("DEPOSIT")
+                .name(name)
+                .amount(amount)
+                .build();
+
+        String json = objectMapper.writeValueAsString(transactionDepositWithdrawDTO);
+
+        RequestBody requestBody = RequestBody.create(json, JSON);
+
+
+        Request request = new Request.Builder()
+                .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/clients/" + transactionDepositWithdrawDTO.getName())
+                .patch(requestBody)
+                .build();
+
+        /*
+         Makes a new call, with enqueue denoting asynchronous. So that the main UI thread is not blocked, and the http call can be run in a background thread
+
+         Create a new Callback as Callback is an interface that needs to be implemented to describe what should be done on failure, and on response
+         */
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            // In case http request cannot be sent
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                // If status returned was not success or conflict, where conflict can still be expected
+                if (!(response.code() == 200 || response.code() == 409)) throw new IOException("Unexpected code: " + response);
+
+                // Set status only when request has been fulfilled, if set it immediately right after where it was called, it may set status too soon
+                setOutputStatusToBankStatus();
+            }
+        });
+
+    }
 
     private void addClient(String name, double amount) throws JsonProcessingException {
 
@@ -168,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                // If status returned was not success or conflict, where conflict can still be expected
+                if (!(response.code() == 200 || response.code() == 409)) throw new IOException("Unexpected code: " + response);
 
                 // Set status only when request has been fulfilled, if set it right after addClient call where it was called, it may set status too soon
                 setOutputStatusToBankStatus();
@@ -197,6 +240,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                // If status returned was not success
+                if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
+
 
                 runOnUiThread(new Runnable() { // since onResponse and onFailure is running on a background thread, must switch back to UI thread to make UI changes
                     // Runnable is essentially used to create the block of code (in run() below) to run on the main UI thread outside of this background thread
