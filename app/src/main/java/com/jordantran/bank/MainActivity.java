@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // init
-        client = new OkHttpClient();
+        this.client = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
         getBankStatusAndSetOutputStatus();
     }
@@ -96,9 +96,12 @@ public class MainActivity extends AppCompatActivity {
         double amount = 0;
 
         if(!optionSelected.equals("Print Statement")) {
-            amount = Integer.parseInt(this.getInputOfTextField(R.id.inputAmount));
+            if(!this.getInputOfTextField(R.id.inputAmount).isEmpty()) { // to prevent parseDouble on empty string exception
+                amount = Double.parseDouble(this.getInputOfTextField(R.id.inputAmount));
+            }
         }
 
+        
         if(optionSelected.equals("Deposit")) {
             String name = this.getInputOfTextField(R.id.inputToAccount);
             depositOrWithdraw(name, amount, "DEPOSIT");
@@ -123,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void getStatementAndSetOutputStatus(String name) throws JsonProcessingException {
 
-
-
         Request request = new Request.Builder()
                 .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/clients/" + name)
                 .build();
@@ -144,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                // If status returned was not success (200)
-                if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
+                // If status returned was not success or not found
+                if (!(response.code() == 200 || response.code() == 404)) throw new IOException("Unexpected code: " + response);
 
 
                 runOnUiThread(new Runnable() { // since onResponse and onFailure is running on a background thread, must switch back to UI thread to make UI changes
@@ -154,22 +155,28 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            String responseJson = response.body().string();
-
-                            GetStatementDTO getStatementDTO = objectMapper.readValue(responseJson, GetStatementDTO.class);
-
-                            List<String> statement = getStatementDTO.getStatement();
-
-
-                            String output = "";
-                            for(int i = 0; i < statement.size(); i++) {
-                                output += String.format("%s", statement.get(i));
-                                if (i < statement.size() - 1) {
-                                    output += "\n";
-                                }
+                            // No statement to output. Do want to map a non existing DTO if 404, so just need to update bank status
+                            if(response.code() == 404) {
+                                getBankStatusAndSetOutputStatus();
                             }
+                            else {
+                                String responseJson = response.body().string();
 
-                            setContentsOfTextView(R.id.outputStatus, output);
+                                GetStatementDTO getStatementDTO = objectMapper.readValue(responseJson, GetStatementDTO.class);
+
+                                List<String> statement = getStatementDTO.getStatement();
+
+
+                                String output = "";
+                                for (int i = 0; i < statement.size(); i++) {
+                                    output += String.format("%s", statement.get(i));
+                                    if (i < statement.size() - 1) {
+                                        output += "\n";
+                                    }
+                                }
+
+                                setContentsOfTextView(R.id.outputStatus, output);
+                            }
 
                         }
                         catch (IOException e) {
@@ -334,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 // If status returned was not success
-                if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
+                if (response.code() != 200) throw new IOException("Unexpected code: " + response);
 
 
                 runOnUiThread(new Runnable() { // since onResponse and onFailure is running on a background thread, must switch back to UI thread to make UI changes
