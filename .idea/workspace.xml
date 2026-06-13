@@ -26,7 +26,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="176602a7-e433-462b-86a4-5a806f1a0c26" name="Changes" comment="" />
+    <list default="true" id="176602a7-e433-462b-86a4-5a806f1a0c26" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/jordantran/bank/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/jordantran/bank/MainActivity.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
