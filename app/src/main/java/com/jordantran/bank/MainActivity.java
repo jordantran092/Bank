@@ -367,3 +367,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+
+
+/*
+
+* Copyright 2026, Jordan Tran
+* All rights reserved.
+
+*/
