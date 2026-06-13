@@ -11,13 +11,17 @@ import android.widget.TextView;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jordantran.bank.domain.dto.BankStatusDTO;
+import com.jordantran.bank.domain.dto.ClientDTO;
 
 import java.io.IOException;
 
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ObjectMapper objectMapper;
     private OkHttpClient client;
+    private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
 
     @Override
@@ -64,57 +69,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-    /* Helper Methods */
-
-    private void setOutputStatusToBankStatus() {
-
-        Request request = new Request.Builder()
-                .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/status")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            // In case http request cannot be sent
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String responseJson = response.body().string();
-
-                            BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
-
-                            setContentsOfTextView(R.id.outputStatus, bankStatusDTO.getStatus());
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        });
+    /*
+    When add a new account is pressed, will retrieve the name and initial balance and use that to create a new client and then output the status of the bank
+     */
+    public void computeButtonAddNewAccountClicked(View view) throws JsonProcessingException {
+        String name = getInputOfTextField(R.id.inputClientName);
+        double amount = Double.parseDouble(getInputOfTextField(R.id.inputStartBalance));
+        addClient(name, amount);
 
     }
 
 
-//    /*
-//    When add a new account is pressed, will retrieve the name and initial balance and use that to create a new client and then output the status of the bank
-//     */
-//    public void computeButtonAddNewAccountClicked(View view) {
-//        String name = getInputOfTextField(R.id.inputClientName);
-//        double amount = Double.parseDouble(getInputOfTextField(R.id.inputStartBalance));
-//        bank.addClient(name, amount);
-//        setContentsOfTextView(R.id.outputStatus, bank.getStatus());
-//    }
+
 //
 //    /*
 //    Performs the service depending on what service chosen in service type drop down menu.
@@ -164,5 +130,94 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        setContentsOfTextView(R.id.outputStatus, output);
 //    }
+
+
+
+
+    /* Helper Methods */
+
+    private void addClient(String name, double amount) throws JsonProcessingException {
+
+        ClientDTO clientDTO = ClientDTO.builder()
+                .name(name)
+                .balance(amount)
+                .build();
+
+        String clientJson = objectMapper.writeValueAsString(clientDTO);
+
+        RequestBody requestBody = RequestBody.create(clientJson, JSON);
+
+
+        Request request = new Request.Builder()
+                .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/clients")
+                .post(requestBody)
+                .build();
+
+        /*
+         Makes a new call, with enqueue denoting asynchronous. So that the main UI thread is not blocked, and the http call can be run in a background thread
+
+         Create a new Callback as Callback is an interface that needs to be implemented to describe what should be done on failure, and on response
+         */
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            // In case http request cannot be sent
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                // Set status only when request has been fulfilled, if set it right after addClient call where it was called, it may set status too soon
+                setOutputStatusToBankStatus();
+            }
+        });
+
+    }
+
+    private void setOutputStatusToBankStatus() {
+
+        Request request = new Request.Builder()
+                .url("https://jordantran-bookapi.k9hqccrxv6fxw.ca-central-1.cs.amazonlightsail.com/api/v1/bank/status")
+                .build();
+
+        /*
+         Makes a new call, with enqueue denoting asynchronous. So that the main UI thread is not blocked, and the http call can be run in a background thread
+
+         Create a new Callback as Callback is an interface that needs to be implemented to describe what should be done on failure, and on response
+         */
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            // In case http request cannot be sent
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                runOnUiThread(new Runnable() { // since onResponse and onFailure is running on a background thread, must switch back to UI thread to make UI changes
+                    // Runnable is essentially used to create the block of code (in run() below) to run on the main UI thread outside of this background thread
+
+                    @Override
+                    public void run() {
+                        try {
+                            String responseJson = response.body().string();
+
+                            BankStatusDTO bankStatusDTO = objectMapper.readValue(responseJson, BankStatusDTO.class);
+
+                            setContentsOfTextView(R.id.outputStatus, bankStatusDTO.getStatus());
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+    }
 
 }
