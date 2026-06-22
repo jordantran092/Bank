@@ -2,12 +2,14 @@
 
 A full-stack banking application demonstrating **clean architecture**, **comprehensive testing**, and **RESTful API design**.
 <br><br>
-Click here for back-end portion of source code: [repository](https://gitfront.io/r/jordan-tran/VLsxq5nGQwP6/Bank-App-Spring-Boot-REST-API/)
+Click here for back-end portion of source code: [repository](https://github.com/jordantran092/Bank-App-Spring-Boot-REST-API/)
 
 
 <!--
 
-https://github.com/jordantran092/Bank-App-Spring-Boot-REST-API/
+
+
+https://gitfront.io/r/jordan-tran/VLsxq5nGQwP6/Bank-App-Spring-Boot-REST-API/
 
 
 
